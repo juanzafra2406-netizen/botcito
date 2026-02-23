@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ChatInterface from './components/ChatInterface';
 
 declare global {
@@ -13,20 +12,8 @@ declare global {
 
 const App: React.FC = () => {
   const [isKeyConfigured, setIsKeyConfigured] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [manualKey, setManualKey] = useState<string>('');
   const [isUnlocking, setIsUnlocking] = useState<boolean>(false);
-
-  useEffect(() => {
-    // Al cargar, solo verificamos si ya existe una sesión activa o clave guardada
-    // para pre-cargar el estado, pero mantendremos al usuario en la pantalla de login
-    // a menos que explícitamente queramos que sea persistente.
-    const savedKey = localStorage.getItem('GEMINI_API_KEY') || process.env.GEMINI_API_KEY || process.env.API_KEY;
-    if (savedKey && savedKey.length > 10 && savedKey !== "undefined") {
-      setManualKey(savedKey);
-    }
-    setIsLoading(false);
-  }, []);
 
   const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,12 +27,8 @@ const App: React.FC = () => {
     setIsUnlocking(true);
     
     try {
-      // Guardamos la llave como la activa
       localStorage.setItem('GEMINI_API_KEY', keyToUse);
-      
-      // Pequeña demora para efecto visual de "desbloqueo"
       await new Promise(resolve => setTimeout(resolve, 800));
-      
       setIsKeyConfigured(true);
     } catch (error) {
       console.error("Error unlocking:", error);
@@ -53,6 +36,12 @@ const App: React.FC = () => {
     } finally {
       setIsUnlocking(false);
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('GEMINI_API_KEY');
+    setManualKey('');
+    setIsKeyConfigured(false);
   };
 
   const handleAIStudioConnect = async () => {
@@ -68,20 +57,10 @@ const App: React.FC = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#CFFF65]/20 border-t-[#CFFF65] rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-white text-black font-sans antialiased overflow-hidden">
-      {/* Background Elements */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gray-50"></div>
-        <div className="absolute top-0 left-0 w-full h-full opacity-5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
       </div>
 
       <main className="relative z-10 flex flex-col h-screen">
@@ -89,11 +68,6 @@ const App: React.FC = () => {
           <div className="flex-grow flex items-center justify-center p-6">
             <div className="max-w-md w-full space-y-8">
               <div className="text-center space-y-4">
-                <div className="inline-block p-4 rounded-3xl bg-[#CFFF65]/20 border border-[#CFFF65]/30 shadow-[0_0_50px_-12px_rgba(207,255,101,0.5)] animate-pulse">
-                  <svg className="w-12 h-12 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                </div>
                 <div className="space-y-2">
                   <h1 className="text-4xl font-black tracking-tighter text-black">
                     SISTEMA <span className="bg-[#CFFF65] px-2">BLOQUEADO</span>
@@ -112,9 +86,10 @@ const App: React.FC = () => {
                       type="password"
                       value={manualKey}
                       onChange={(e) => setManualKey(e.target.value)}
-                      placeholder="sk-..."
+                      placeholder="AIza..."
                       className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-[#CFFF65] focus:border-transparent outline-none transition-all text-black font-mono text-sm placeholder-gray-300"
                       required
+                      autoComplete="off"
                     />
                   </div>
                   
@@ -166,7 +141,7 @@ const App: React.FC = () => {
                 🤖 <span className="bg-[#CFFF65] px-1">ASISTENTE</span> OPERATIVO
               </h1>
               <button 
-                onClick={() => setIsKeyConfigured(false)}
+                onClick={handleLogout}
                 className="text-[10px] font-bold text-gray-400 hover:text-red-500 uppercase tracking-widest transition-colors"
               >
                 Cerrar Sesión
