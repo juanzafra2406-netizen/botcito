@@ -2,6 +2,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { SYSTEM_INSTRUCTION } from '../constants';
 import { fetchDocumentContent } from './documentService';
+import { findRelevantChunks } from './rag';
 
 let aiInstance: GoogleGenAI | null = null;
 
