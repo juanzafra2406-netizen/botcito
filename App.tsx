@@ -67,7 +67,15 @@ const App: React.FC = () => {
         {!isKeyConfigured ? (
           <div className="flex-grow flex items-center justify-center p-6">
             <div className="max-w-md w-full space-y-8">
-              <div className="text-center space-y-4">
+              <div className="text-center space-y-6">
+                {/* Logo */}
+                <div className="flex justify-center">
+                  <img
+                    src="/plinng2-01 (1).png"
+                    alt="Logo"
+                    className="h-16 object-contain"
+                  />
+                </div>
                 <div className="space-y-2">
                   <h1 className="text-4xl font-black tracking-tighter text-black">
                     SISTEMA <span className="bg-[#CFFF65] px-2">BLOQUEADO</span>
@@ -137,9 +145,12 @@ const App: React.FC = () => {
                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
                 <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Sistema Activo</span>
               </div>
-              <h1 className="text-lg font-bold tracking-tight text-black">
-                🤖 <span className="bg-[#CFFF65] px-1">ASISTENTE</span> OPERATIVO
-              </h1>
+              {/* Logo en el header */}
+              <img
+                src="/plinng2-01 (1).png"
+                alt="Logo"
+                className="h-8 object-contain"
+              />
               <button 
                 onClick={handleLogout}
                 className="text-[10px] font-bold text-gray-400 hover:text-red-500 uppercase tracking-widest transition-colors"
