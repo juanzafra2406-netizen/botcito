@@ -71,7 +71,7 @@ const App: React.FC = () => {
                 {/* Logo */}
                 <div className="flex justify-center">
                   <img
-                    src="/logo.png"
+                    src="./logo.png"
                     alt="Logo"
                     className="h-16 object-contain"
                   />
@@ -147,7 +147,7 @@ const App: React.FC = () => {
               </div>
               {/* Logo en el header */}
               <img
-                src="/logo.png"
+                src="./logo.png"
                 alt="Logo"
                 className="h-8 object-contain"
               />
