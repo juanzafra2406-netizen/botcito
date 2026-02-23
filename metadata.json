@@ -1,0 +1,5 @@
+{
+  "name": "Remix: botcito pro",
+  "description": "Un asistente de IA para responder preguntas sobre procesos operativos internos, basándose estrictamente en un documento de referencia.",
+  "requestFramePermissions": []
+}
