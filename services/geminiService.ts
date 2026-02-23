@@ -3,6 +3,7 @@ import { SYSTEM_INSTRUCTION } from '../constants';
 import { fetchDocumentContent } from './documentService';
 import { findRelevantChunks } from './rag';
 
+let currentApiKey: string | null = null;
 let aiInstance: GoogleGenAI | null = null;
 
 const getAI = () => {
@@ -14,6 +15,12 @@ const getAI = () => {
 
   if (!API_KEY) {
     throw new Error("API_KEY_MISSING");
+  }
+
+  // Si la key cambió, resetear la instancia cacheada
+  if (API_KEY !== currentApiKey) {
+    aiInstance = null;
+    currentApiKey = API_KEY;
   }
 
   if (!aiInstance) {
