@@ -7,7 +7,7 @@ let aiInstance: GoogleGenAI | null = null;
 
 const getAI = () => {
   let API_KEY = process.env.GEMINI_API_KEY || process.env.API_KEY;
-  
+
   if (!API_KEY || API_KEY === "undefined") {
     API_KEY = localStorage.getItem('GEMINI_API_KEY') || '';
   }
@@ -46,20 +46,24 @@ export const getOperationalAnswer = async (userQuery: string): Promise<string> =
 
     const documentContent = await getDocumentContent();
 
-    // 🔥 EXTRAER SOLO CONTEXTO RELEVANTE (RAG)
+    // 🔥 RAG — extraer contexto relevante
     const relevantContext = findRelevantChunks(documentContent, userQuery);
 
     const enhancedSystemInstruction = `${SYSTEM_INSTRUCTION}
 
-Responde usando SOLO la información del siguiente contexto del documento.
+Usa el contexto siguiente para responder.
 
-=== CONTEXTO RELEVANTE ===
+Si la información no coincide exactamente, responde con la información más cercana disponible en el documento.
+
+Evita decir que "no está documentado" salvo que realmente no exista nada relevante.
+
+=== CONTEXTO ===
 ${relevantContext}
 === FIN CONTEXTO ===
 `;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash", // ⚡ modelo rápido
+      model: "gemini-2.5-flash",
       contents: userQuery,
       config: {
         systemInstruction: enhancedSystemInstruction,
