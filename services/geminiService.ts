@@ -3,13 +3,24 @@ import { GoogleGenAI } from "@google/genai";
 import { SYSTEM_INSTRUCTION } from '../constants';
 import { fetchDocumentContent } from './documentService';
 
-const API_KEY = process.env.API_KEY;
+let aiInstance: GoogleGenAI | null = null;
 
-if (!API_KEY) {
-  throw new Error("API_KEY environment variable not set");
-}
+const getAI = () => {
+  let API_KEY = process.env.GEMINI_API_KEY || process.env.API_KEY;
+  
+  // Si no hay key en el ambiente, buscamos en localStorage
+  if (!API_KEY || API_KEY === "undefined") {
+    API_KEY = localStorage.getItem('GEMINI_API_KEY') || '';
+  }
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+  if (!API_KEY) {
+    throw new Error("API_KEY_MISSING");
+  }
+  if (!aiInstance) {
+    aiInstance = new GoogleGenAI({ apiKey: API_KEY });
+  }
+  return aiInstance;
+};
 
 // Cache del documento para no hacer fetch en cada pregunta
 let documentContentCache: string | null = null;
@@ -32,6 +43,7 @@ const getDocumentContent = async (): Promise<string> => {
 
 export const getOperationalAnswer = async (userQuery: string): Promise<string> => {
   try {
+    const ai = getAI();
     // Obtener el contenido del documento
     const documentContent = await getDocumentContent();
     
@@ -62,6 +74,9 @@ ${documentContent}
   } catch (error) {
     console.error("Error calling Gemini API:", error);
     if (error instanceof Error) {
+      if (error.message === "API_KEY_MISSING") {
+        return "Error: No se ha configurado la API Key de Gemini. Por favor, conéctala en la pantalla de inicio.";
+      }
       return `Error al contactar al servicio de asistencia: ${error.message}`;
     }
     return "Ocurrió un error desconocido. Por favor, verifica la consola para más detalles.";

@@ -68,11 +68,11 @@ const ChatInterface: React.FC = () => {
         ))}
         {isLoading && (
           <div className="flex justify-start">
-              <div className="bg-gray-700 rounded-lg p-3 max-w-lg animate-pulse">
+              <div className="bg-gray-100 rounded-2xl p-4 max-w-lg animate-pulse border border-gray-200">
                 <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-sky-400 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-sky-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                    <div className="w-2 h-2 bg-sky-400 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                    <div className="w-2 h-2 bg-[#CFFF65] rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-[#CFFF65] rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    <div className="w-2 h-2 bg-[#CFFF65] rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
                 </div>
               </div>
           </div>
